@@ -1,0 +1,23 @@
+# Virtual Environment
+venv/
+.env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Dados temporários
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Banco local
+*.sqlite3
