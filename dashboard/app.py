@@ -11,7 +11,7 @@ MONGO_URI = ""
 
 st.set_page_config(page_title="Dashboard Roberto Silva - Grupo 1", layout="wide")
 
-st.title(" Dashboard de Tendências: Spotify & YouTube")
+st.title("🎵 Dashboard de Tendências: Spotify & YouTube")
 st.markdown("Status: **Etapa 2-C** - Visualização Completa e Análise Regional")
 
 @st.cache_data
@@ -26,7 +26,7 @@ def carregar_dados_gerais():
         print(f"Erro Postgres: {e}")
         pass 
 
-    # Dados de teste 
+    # Dados de teste (Plano B)
     data_s = {
         "nome_musica": [f"Música {i}" for i in range(1, 51)],
         "artista": ["Slayer", "Metallica", "Iron Maiden", "Anitta", "Alok"] * 10,
@@ -51,31 +51,29 @@ df_s['data_lancamento'] = pd.to_datetime(df_s['data_lancamento'])
 df_y['data_publicacao'] = pd.to_datetime(df_y['data_publicacao'])
 df_y['engajamento'] = (df_y['likes'] + df_y['comentarios']) / df_y['visualizacoes']
 
-#  SIDEBAR 
-st.sidebar.header("Filtros do Sistema")
+# --- SIDEBAR ---
+st.sidebar.header(" Filtros do Sistema")
 periodo = st.sidebar.date_input(" Período", [df_s['data_lancamento'].min(), df_s['data_lancamento'].max()])
 generos = st.sidebar.multiselect(" Gêneros Musicais", df_s['genero'].unique(), default=df_s['genero'].unique())
-regioes = st.sidebar.multiselect("Regiões (YouTube)", df_y['regiao'].unique(), default=df_y['regiao'].unique())
-artistas = st.sidebar.multiselect("Artistas/Canais", df_s['artista'].unique(), default=df_s['artista'].unique())
+regioes = st.sidebar.multiselect(" Regiões (YouTube)", df_y['regiao'].unique(), default=df_y['regiao'].unique())
+artistas = st.sidebar.multiselect(" Artistas/Canais", df_s['artista'].unique(), default=df_s['artista'].unique())
 min_eng = st.sidebar.slider(" Engajamento Mínimo (YouTube)", 0.0, float(df_y['engajamento'].max() or 1.0), 0.0)
 
 if isinstance(periodo, (list, tuple)) and len(periodo) == 2:
-    # Filtragem
+    # Filtragem aplicada
     df_s_f = df_s[(df_s['data_lancamento'].dt.date >= periodo[0]) & (df_s['data_lancamento'].dt.date <= periodo[1]) & (df_s['genero'].isin(generos)) & (df_s['artista'].isin(artistas))]
     df_y_f = df_y[(df_y['data_publicacao'].dt.date >= periodo[0]) & (df_y['data_publicacao'].dt.date <= periodo[1]) & (df_y['regiao'].isin(regioes)) & (df_y['canal'].isin(artistas)) & (df_y['engajamento'] >= min_eng)]
 
-    #  TOP 10 
+    # --- 1. TOP 10 (GRÁFICOS VERTICAIS) ---
     col1, col2 = st.columns(2)
     with col1:
         st.subheader(" Top 10 Spotify")
-        # Invertido: nome da musica no X e popularidade no Y para ficar na vertical
         st.plotly_chart(px.bar(df_s_f.nlargest(10, 'popularidade'), x='nome_musica', y='popularidade', color='artista'), use_container_width=True)
     with col2:
         st.subheader(" Top 10 YouTube")
-        # Invertido: nome da musica no X e popularidade no Y para ficar na vertical
         st.plotly_chart(px.bar(df_y_f.nlargest(10, 'visualizacoes'), x='titulo_video', y='visualizacoes', color='canal'), use_container_width=True)
 
-    #  ANÁLISE REGIONAL 
+    # --- 2. ANÁLISE REGIONAL ---
     st.divider()
     st.header(" Consumo Global e Engajamento")
     df_reg = df_y_f.groupby('regiao').agg({'visualizacoes': 'sum', 'engajamento': 'mean'}).reset_index()
@@ -86,10 +84,75 @@ if isinstance(periodo, (list, tuple)) and len(periodo) == 2:
     with c_pie:
         st.plotly_chart(px.pie(df_reg, values='visualizacoes', names='regiao', hole=0.4, title="Visualizações por Região"), use_container_width=True)
 
-    # TABELAS INTERATIVAS 
+    # --- 3. SEÇÃO DE CORRELAÇÃO (NOVO) ---
     st.divider()
-    st.header(" Tabelas Interativas")
-    t_m, t_v, t_c = st.tabs(["Músicas", "Vídeos", " Resumo por Região"])
+    st.header(" Análise de Correlação entre Plataformas")
+    
+    # Cruzamento de dados: Artista (Spotify) == Canal (YouTube)
+    df_corr = pd.merge(df_s_f, df_y_f, left_on='artista', right_on='canal', how='inner')
+
+    if not df_corr.empty:
+        c1, c2 = st.columns(2)
+        with c1:
+            st.subheader(" Músicas Populares em Ambas")
+            fig_mus = px.bar(df_corr.nlargest(10, 'popularidade'), x='nome_musica', y='popularidade', color='artista', title="Presença Híbrida")
+            st.plotly_chart(fig_mus, use_container_width=True)
+        with c2:
+            st.subheader(" Artistas Populares nas Duas")
+            df_art_corr = df_corr.groupby('artista')['popularidade'].mean().reset_index()
+            fig_art = px.bar(df_art_corr.nlargest(10, 'popularidade'), x='artista', y='popularidade', color='artista', title="Média de Popularidade Híbrida")
+            st.plotly_chart(fig_art, use_container_width=True)
+
+        # SEÇÃO DE CORRELAÇÃO (BARRAS HORIZONTAIS PADRONIZADAS) ---
+    st.divider()
+    st.header(" Análise de Correlação: Spotify vs YouTube")
+    
+    # Cruzamento de dados
+    df_corr = pd.merge(df_s_f, df_y_f, left_on='artista', right_on='canal', how='inner')
+
+    if not df_corr.empty:
+        # 1. Gráfico de Músicas (Igual ao segundo estilo)
+        st.subheader("Músicas Populares em Ambas (Spotify + YouTube)")
+        
+        fig_mus_h = px.bar(
+            df_corr.nlargest(10, 'popularidade'), 
+            x='popularidade', 
+            y='nome_musica', 
+            orientation='h',
+            color='popularidade', # Degradê baseado na popularidade
+            color_continuous_scale='Blues',
+            text_auto='.1f', # Mostra o valor exato na ponta da barra
+            title="Top 10 Músicas Híbridas"
+        )
+        fig_mus_h.update_layout(yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig_mus_h, use_container_width=True)
+
+        # 2. Gráfico de Artistas 
+        st.subheader("Ranking de Artistas: Presença nas Duas Plataformas")
+        
+        df_art_corr = df_corr.groupby('artista')['popularidade'].mean().reset_index()
+        
+        fig_art_h = px.bar(
+            df_art_corr.nlargest(10, 'popularidade'), 
+            x='popularidade', 
+            y='artista', 
+            orientation='h',
+            color='popularidade', # Degradê baseado na popularidade
+            color_continuous_scale='Blues',
+            text_auto='.1f',
+            title="Média de Popularidade por Artista"
+        )
+        fig_art_h.update_layout(yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig_art_h, use_container_width=True)
+
+ 
+    else:
+        st.warning("Sem dados de correlação direta para os filtros aplicados.")
+
+    # --- 4. TABELAS INTERATIVAS ---
+    st.divider()
+    st.header("Tabelas Interativas")
+    t_m, t_v, t_c = st.tabs([" Músicas", " Vídeos", " Resumo por Região"])
 
     with t_m:
         st.dataframe(df_s_f.sort_values(by='popularidade', ascending=False), use_container_width=True)
