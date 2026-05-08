@@ -36,6 +36,24 @@ def pegar_token_spotify():
     return token
 
 
+def popularidade_por_posicao(posicao):
+
+    faixas = [
+        (10, 95),
+        (20, 85),
+        (30, 75),
+        (40, 65),
+        (50, 55),
+    ]
+
+    for limite, popularidade in faixas:
+
+        if posicao <= limite:
+            return popularidade
+
+    return 40
+
+
 def buscar_musicas_populares():
 
     token = pegar_token_spotify()
@@ -64,12 +82,7 @@ def buscar_musicas_populares():
 
             "offset": offset,
 
-            # ALTERAR MERCADO AQUI
-            # BR = Brasil
-            # US = Estados Unidos
-            # JP = Japão
-            # ES = Espanha
-            "market": "US"
+            "market": "US" # BR É UMA OPCAO TBM
         }
 
         response = requests.get(
@@ -82,7 +95,12 @@ def buscar_musicas_populares():
 
         dados = response.json()
 
-        for track in dados["tracks"]["items"]:
+        for index, track in enumerate(
+            dados["tracks"]["items"],
+            start=offset + 1
+        ):
+
+            popularidade_spotify = track.get("popularity")
 
             musica = {
 
@@ -95,10 +113,13 @@ def buscar_musicas_populares():
 
                 "album": track["album"]["name"],
 
-                # NULL se não existir
-                "popularidade": track.get("popularity"),
+                # Se vier null usa popularidade por posição
+                "popularidade": (
+                    popularidade_spotify
+                    if popularidade_spotify is not None
+                    else popularidade_por_posicao(index)
+                ),
 
-                # nome da coluna igual ao banco
                 "duracao": track["duration_ms"],
 
                 "genero": None,
