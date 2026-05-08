@@ -2,11 +2,11 @@
 
 ## Integrantes
 
-* Anderson
-* Wendell
-* Lais
-* Lucas
-* Wendell Peixe
+* Anderson Bem
+* Wendell Barboza
+* Laís Nayara
+* Lucas Mendes
+* Wendell Brasiliano
 
 ---
 
@@ -367,15 +367,5 @@ Durante o desenvolvimento do projeto foram trabalhados conceitos como:
 
 ---
 
-# Comando para Limpar o Banco
 
-```sql
-TRUNCATE TABLE correlacoes, spotify_musicas, youtube_videos
-RESTART IDENTITY CASCADE;
-```
 
----
-
-# Autor
-
-Projeto desenvolvido para a disciplina de Data Science.
