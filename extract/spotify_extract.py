@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import pandas as pd
+from pathlib import Path
 
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
@@ -10,6 +11,9 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+BASE_DIR = Path(__file__).resolve().parent.parent
+arquivo_json = BASE_DIR / "data" / "raw" / "spotify_musicas.json"
+arquivo_csv = BASE_DIR / "data" / "raw" / "spotify_musicas.csv"
 
 
 def pegar_token_spotify():
@@ -145,7 +149,7 @@ if __name__ == "__main__":
     # -----------------------------------------
 
     with open(
-        "../data/raw/spotify_musicas.json",
+        arquivo_json,
         "w",
         encoding="utf-8"
     ) as arquivo:
@@ -172,7 +176,7 @@ if __name__ == "__main__":
     # -----------------------------------------
 
     df.to_csv(
-        "../data/raw/spotify_musicas.csv",
+        arquivo_csv,
         index=False,
         encoding="utf-8-sig"
     )

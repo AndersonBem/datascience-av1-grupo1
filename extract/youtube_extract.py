@@ -2,12 +2,16 @@ import os
 import json
 import requests
 import pandas as pd
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+BASE_DIR = Path(__file__).resolve().parent.parent
+arquivo_json = BASE_DIR / "data" / "raw" / "youtube_videos.json"
+arquivo_csv = BASE_DIR / "data" / "raw" / "youtube_videos.csv"
 
 
 def buscar_videos_populares():
@@ -134,7 +138,7 @@ if __name__ == "__main__":
     # -----------------------------------------
 
     with open(
-        "../data/raw/youtube_videos.json",
+        arquivo_json,
         "w",
         encoding="utf-8"
     ) as arquivo:
@@ -161,7 +165,7 @@ if __name__ == "__main__":
     # -----------------------------------------
 
     df.to_csv(
-        "../data/raw/youtube_videos.csv",
+        arquivo_csv,
         index=False,
         encoding="utf-8-sig"
     )

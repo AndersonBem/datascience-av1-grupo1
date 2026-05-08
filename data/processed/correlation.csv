@@ -1,0 +1,11 @@
+musica,titulo_video,artista,canal,tipo_correlacao,album,data_lancamento_musica,data_lancamento_video,popularidade_musica,visualizacoes_video,popularidade_video
+Thunderstruck,AC/DC - Thunderstruck Official Video,AC/DC,AC/DC,musica_popular_em_videos_populares,The Razors Edge,1990-09-24,2012-01-01,95,1000000000,502460000.0
+Thunderstruck,AC/DC - Thunderstruck Official Video,AC/DC,AC/DC,artista_popular_nas_duas_plataformas,The Razors Edge,1990-09-24,2012-01-01,95,1000000000,502460000.0
+Smooth Criminal - 2012 Remaster,Michael Jackson - Smooth Criminal Official Video,Michael Jackson,michaeljacksonVEVO,musica_popular_em_videos_populares,Bad 25th Anniversary,2012-09-18,2009-10-03,95,900000000,452150000.0
+Smooth Criminal - 2012 Remaster,Smooth Criminal - Michael Jackson on TinkerBeat Music Box 🎶 ASMR Satisfying Music,Michael Jackson,TinkerTwist - 3D Printing,musica_popular_em_videos_populares,Bad 25th Anniversary,2012-09-18,2026-05-05,95,1865396,937975.5
+Paper Planes,M.I.A. - Paper Planes Official Video,M.I.A.,M.I.A.,musica_popular_em_videos_populares,Kala,2007-08-20,2009-01-01,95,400000000,200920000.0
+Paper Planes,M.I.A. - Paper Planes Official Video,M.I.A.,M.I.A.,artista_popular_nas_duas_plataformas,Kala,2007-08-20,2009-01-01,95,400000000,200920000.0
+505,Arctic Monkeys - 505,Arctic Monkeys,Arctic Monkeys,musica_popular_em_videos_populares,Favourite Worst Nightmare (Standard Version),2007-04-24,2010-01-01,85,350000000,176224000.0
+505,Arctic Monkeys - 505,Arctic Monkeys,Arctic Monkeys,artista_popular_nas_duas_plataformas,Favourite Worst Nightmare (Standard Version),2007-04-24,2010-01-01,85,350000000,176224000.0
+The Party & The After Party,The Weeknd - The Party & The After Party,The Weeknd,TheWeekndVEVO,musica_popular_em_videos_populares,House Of Balloons (Original),2011-03-21,2012-03-01,85,250000000,125768000.0
+I Wanna Be Yours,Arctic Monkeys - 505,Arctic Monkeys,Arctic Monkeys,artista_popular_nas_duas_plataformas,AM,2013-09-09,2010-01-01,65,350000000,176224000.0

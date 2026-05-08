@@ -25,6 +25,16 @@ youtube_ordenado = youtube.sort_values(
     ascending=False
 )
 
+## A regra estava muito rigida, e estava gerando um correlation.csv vazio
+def normalizar_texto(texto):
+    return str(texto).strip().lower()
+
+def limpar_nome_musica(nome):
+    nome = str(nome)
+    nome = nome.split(" - ")[0] 
+    nome = nome.split("(")[0] 
+    return nome.strip().lower()
+
 for _, musica in spotify_ordenado.iterrows():
 
     nome_musica = musica["nome_musica"]
@@ -35,7 +45,10 @@ for _, musica in spotify_ordenado.iterrows():
         titulo_video = video["titulo_video"]
         canal = video["canal"]
         ## musicas_populares_no_spotify_que_tambem_aparecem_no_youtube
-        if nome_musica.lower() in titulo_video.lower():
+        nome_musica_limpo = limpar_nome_musica(nome_musica)
+        titulo_video_limpo = normalizar_texto(titulo_video)
+
+        if nome_musica_limpo in titulo_video_limpo:
             correlacoes.append({
                 "musica": nome_musica,
                 "titulo_video": titulo_video,
@@ -50,7 +63,12 @@ for _, musica in spotify_ordenado.iterrows():
                 "popularidade_video": video["popularidade_video"]
             })
         ##artistas_populares_nas_duas_plataformas
-        if artista.strip().lower() == canal.strip().lower():
+        artista_limpo = normalizar_texto(artista)
+        canal_limpo = normalizar_texto(canal)
+
+        canal_limpo = canal_limpo.replace("vevo", "").replace(" - topic", "").strip()
+
+        if artista_limpo in canal_limpo or canal_limpo in artista_limpo:
             correlacoes.append({
                 "musica": nome_musica,
                 "titulo_video": titulo_video,
