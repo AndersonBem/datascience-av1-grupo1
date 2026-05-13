@@ -18,6 +18,7 @@ PROCESSED_DIR = BASE_DIR / "data" / "processed"
 def carregar_spotify():
 
     df_spotify = pd.read_csv(PROCESSED_DIR / "spotify_clean.csv")
+    df_spotify = df_spotify.drop_duplicates(subset=["id_musica"])
 
     df_spotify.to_sql(
         "spotify_musicas",
@@ -32,6 +33,7 @@ def carregar_spotify():
 def carregar_youtube():
 
     df_youtube = pd.read_csv(PROCESSED_DIR / "youtube_clean.csv")
+    df_youtube = df_youtube.drop_duplicates(subset=["id_video"])
 
     df_youtube.to_sql(
         "youtube_videos",
