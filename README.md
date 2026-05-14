@@ -367,5 +367,15 @@ Durante o desenvolvimento do projeto foram trabalhados conceitos como:
 
 ---
 
+# Sugestões de Melhorias Futuras
+
+- Melhorar a precisão das correlações entre músicas e vídeos usando técnicas de similaridade textual.
+- Ampliar a coleta de dados para mais regiões e períodos.
+- Criar atualização automática do pipeline ETL.
+- Adicionar mais filtros no dashboard.
+- Melhorar a classificação de gêneros musicais.
+- Criar tratamento mais avançado para vídeos de covers, remixes e playlists.
+- Adicionar gráficos comparativos mais detalhados entre Spotify e YouTube.
+- Implementar logs e tratamento de erros mais completo nas etapas do pipeline.
 
 
